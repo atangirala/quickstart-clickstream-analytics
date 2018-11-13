@@ -1662,6 +1662,20 @@ Resources:
       Subscription:
         - Endpoint: !Ref 'OperatorEMail'
           Protocol: email
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - events.amazonaws.com
+          Action: sns:Publish
+          Resource: !Ref NotificationTopic
+      Topics:
+      - !Ref NotificationTopic
   AppServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Condition: isDemon
@@ -2185,6 +2199,20 @@ Resources:
       Subscription:
         - Endpoint: !Ref 'OperatorEMail'
           Protocol: email
+  BastionNotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - events.amazonaws.com
+         i Action: sns:Publish
+          Resource: !Ref BastionNotificationTopic
+      Topics:
+      - !Ref BastionNotificationTopic
   KinesisAnalyticsRole:
     Type: AWS::IAM::Role
     Properties:
