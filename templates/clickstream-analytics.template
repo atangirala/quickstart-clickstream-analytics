@@ -1724,7 +1724,7 @@ Resources:
             /var/www/html/index.html:
               content: !Join
                 - ''
-                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics sample.</h1>'
+                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics quickstart template.</h1>'
               mode: '000644'
               owner: root
               group: root
@@ -1895,7 +1895,7 @@ Resources:
             /var/www/html/index.html:
               content: !Join
                 - ''
-                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics sample.</h1>'
+                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics quickstart template.</h1>'
               mode: '000644'
               owner: root
               group: root
