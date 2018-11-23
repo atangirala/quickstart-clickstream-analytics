@@ -164,7 +164,7 @@ Metadata:
       RedshiftBufferSize:
         default: Buffer Size
       RedshiftPortNumber:
-      i  default: Redshift Port Number
+        default: Redshift Port Number
       isDemo:
         default: Include Demo Data
       ESIndex:
@@ -1281,13 +1281,19 @@ Resources:
       SnapshotOptions:
         AutomatedSnapshotStartHour: !Ref AutomatedSnapshotStartHour
       AccessPolicies:
-        Version: 2012-10-17
         Statement:
-          - Effect: Allow
-            Principal:
-              AWS: '*'
-            Action: 'es:*'
-            Resource: '*'
+          - Action:
+              - es:ESHttpGet
+              - es:ESHttpPut
+              - es:ESHttpPost
+              - es:ESHttpHead
+            Condition:
+              IpAddress:
+                aws:SourceIp:
+                  - !Ref 'RemoteAccessCIDR'
+            Effect: Allow
+            Principal: '*'
+        Version: '2012-10-17'
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: 'true'
         indices.fielddata.cache.size: 100
