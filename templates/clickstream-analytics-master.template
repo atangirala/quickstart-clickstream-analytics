@@ -1723,6 +1723,20 @@ Resources:
       Subscription:
         - Endpoint: !Ref 'OperatorEMail'
           Protocol: email
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - events.amazonaws.com
+          Action: sns:Publish
+          Resource: !Ref NotificationTopic
+      Topics:
+      - !Ref NotificationTopic
   AppServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Condition: isDemon
@@ -1771,7 +1785,7 @@ Resources:
             /var/www/html/index.html:
               content: !Join
                 - ''
-                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics sample.</h1>'
+                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics quickstart template.</h1>'
               mode: '000644'
               owner: root
               group: root
@@ -1869,7 +1883,7 @@ Resources:
         - !Ref 'AWS::Region'
         - !FindInMap
           - InstanceType2Arch
-          - !Ref 'BastionInstanceType'
+          - !Ref 'AppInstanceType'
           - Arch
       SecurityGroups:
         - !Ref 'AppSecurityGroup'
@@ -1942,7 +1956,7 @@ Resources:
             /var/www/html/index.html:
               content: !Join
                 - ''
-                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics sample.</h1>'
+                - - '<h1>Congratulations, you have successfully launched the AWS CloudFormation Clickstream Analytics quickstart template.</h1>'
               mode: '000644'
               owner: root
               group: root
@@ -2056,7 +2070,7 @@ Resources:
         - !Ref 'AWS::Region'
         - !FindInMap
           - InstanceType2Arch
-          - !Ref 'BastionInstanceType'
+          - !Ref 'AppInstanceType'
           - Arch
       SecurityGroups:
         - !Ref 'AppSecurityGroup'
@@ -2089,7 +2103,6 @@ Resources:
           psql -h ${RedshiftCluster.Endpoint.Address} -U ${MasterUser} -d ${DatabaseName} -p ${RedshiftCluster.Endpoint.Port} PGPASSWORD -c 'create table clickstream_demo.ga_demo_data(city varchar(100), country_region varchar(1000), date date, exits integer,medium varchar(1000), number_of_records integer, page varchar(1000), pageviews integer, section varchar(1000), time_on_page integer, total_downloads integer, unique_visitors integer, visits integer);'
           psql -h ${RedshiftCluster.Endpoint.Address} -U ${MasterUser} -d ${DatabaseName} -p ${RedshiftCluster.Endpoint.Port} PGPASSWORD -c "copy clickstream_demo.schematic_log from 's3://${StreamingAnalyticsBucket}/demodata/Schematic_Log.csv' CREDENTIALS 'aws_access_key_id=$AWS_ACCESS_KEY_ID;aws_secret_access_key=$AWS_SECRET_ACCESS_KEY;token=$AWS_SESSION_TOKEN' delimiter ',' EMPTYASNULL ACCEPTINVCHARS ACCEPTANYDATE IGNOREHEADER AS 1;"
           psql -h ${RedshiftCluster.Endpoint.Address} -U ${MasterUser} -d ${DatabaseName} -p ${RedshiftCluster.Endpoint.Port} PGPASSWORD -c "copy clickstream_demo.ga_demo_data from 's3://${StreamingAnalyticsBucket}/demodata/GADemoData.csv' CREDENTIALS 'aws_access_key_id=$AWS_ACCESS_KEY_ID;aws_secret_access_key=$AWS_SECRET_ACCESS_KEY;token=$AWS_SESSION_TOKEN' delimiter '\t' EMPTYASNULL ACCEPTINVCHARS ACCEPTANYDATE IGNOREHEADER AS 1;"
-          echo '${MasterUserPassword}' '${RedshiftCluster.Endpoint.Address}' '${MasterUser}' '${DatabaseName}' '${RedshiftCluster.Endpoint.Port}' '${StreamingAnalyticsBucket}' '${AppRole}' '${AWS::AccountId}' 'arn:aws:iam::${AWS::AccountId}:role/${AppRole}' > /home/ec2-user/variabledata
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfigisDemos --region ${AWS::Region}
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource AppServerGroupisDemos --region ${AWS::Region}
 
@@ -2253,6 +2266,20 @@ Resources:
       Subscription:
         - Endpoint: !Ref 'OperatorEMail'
           Protocol: email
+  BastionNotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - events.amazonaws.com
+          Action: sns:Publish
+          Resource: !Ref BastionNotificationTopic
+      Topics:
+      - !Ref BastionNotificationTopic
   KinesisAnalyticsRole:
     Type: AWS::IAM::Role
     Properties:
