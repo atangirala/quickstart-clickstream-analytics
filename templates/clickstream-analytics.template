@@ -2215,7 +2215,7 @@ Resources:
           Principal:
             Service:
               - events.amazonaws.com
-         i Action: sns:Publish
+          Action: sns:Publish
           Resource: !Ref BastionNotificationTopic
       Topics:
       - !Ref BastionNotificationTopic
